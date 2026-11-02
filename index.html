@@ -201,6 +201,27 @@ svg text.mean-label{font-size:11px;fill:#788cab;paint-order:stroke;stroke:#fff;s
 @media(max-width:1100px){.demand-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.north-star .value{font-size:41px}.structure-metric{padding:14px 11px}.structure-metric strong{font-size:30px}.structure-metrics{gap:4px;grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr)}.stat-tile{padding:11px 9px}.stat-number{font-size:24px}.stat-number small{margin-left:4px}.demand-grid .chart{height:220px}}
 
+
+.period-comparison{background:linear-gradient(120deg,#dceaff,#edf4ff);border:1px solid #94b6ee;border-left:5px solid #3874dc;border-radius:14px;margin:0 0 23px;padding:23px;box-shadow:0 7px 24px #3268e815}
+.compare-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.compare-heading h3{margin:0;font-size:18px;color:#204f9a;font-weight:700;letter-spacing:.035em}
+.compare-heading>span{font-size:11px;color:#fff;background:#477cce;border:1px solid #3970c8;padding:4px 11px;border-radius:7px}
+.compare-range{font-size:12px;line-height:1.9;color:#5978a4;margin:8px 0 18px}
+.comparison-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.compare-card{border:1px solid #bed2f3;border-top:3px solid #84a9e8;border-radius:11px;padding:16px;background:#ffffffed;min-width:0;box-shadow:0 3px 10px #295aa308}
+.compare-card h4{display:flex;justify-content:space-between;align-items:baseline;gap:7px;margin:0 0 13px;font-size:13px;font-weight:600;line-height:1.7;color:#406397}
+.compare-card h4 small{font-size:10px;font-weight:400;color:#7189ac;white-space:nowrap}
+.compare-card dl{margin:0 0 12px}
+.compare-card dl>div{display:flex;justify-content:space-between;align-items:baseline;gap:7px;padding:5px 0}.compare-card dl>div:first-child{background:#eaf2ff;border:1px solid #dce9fc;border-radius:7px;padding:5px 9px;margin:0 -3px 4px}
+.compare-card dt{font-size:11px;color:#6e89b1}.compare-card dl>div:first-child dt{color:#4c75b4;font-weight:600}
+.compare-card dd{margin:0;font-size:27px;font-weight:700;line-height:1.5;color:#2455a0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.compare-card dl>div+div dd{font-size:18px;color:#7187a7;font-weight:400}
+.compare-delta{display:inline-block;font-size:14px;font-weight:600;line-height:1.7;font-variant-numeric:tabular-nums;padding:4px 9px;border:1px solid transparent;border-radius:7px}
+.compare-delta.up{color:#285fba;background:#e2edff;border-color:#c5d9fa}.compare-delta.down{color:#93622d;background:#fff2df;border-color:#f0dcbc}.compare-delta.neutral{color:#6e829f;background:#edf2f8;border-color:#dce5f1}
+.comparison-note{font-size:11px;line-height:1.9;margin:12px 0 0;color:#647fa6}
+@media(max-width:1000px){.comparison-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.period-comparison{padding:18px}.comparison-grid{gap:9px}.compare-card{padding:12px}.compare-card dd{font-size:22px}.compare-card h4{flex-direction:column;gap:0;min-height:38px}}
+
 </style></head><body><header><div><h1>外卖平台指标监测仪</h1><small>FOOD DELIVERY · BUSINESS MONITOR</small></div><span class="badge">本地数据 · 自动计算</span></header><main><div class="intro"><div><h2>看清每一笔订单背后的经营变化</h2><p>从交易规模到用户与餐厅，让数据成为可追溯的经营信号。</p></div><label class="upload">＋ 上传订单 CSV<input id="upload" type="file" accept=".csv,text/csv"></label></div><div class="toolbar"><span>分析月份</span><input id="month" type="month" aria-label="分析月份"><button id="apply">查看本月</button><button id="prevMonth" class="secondary" disabled>上个月</button><button id="nextMonth" class="secondary" disabled>下个月</button><label class="stability-label">平稳区间 <select id="stability" aria-label="月度金额平稳区间"><option value="3">±3%</option><option value="5" selected>±5%</option><option value="10">±10%</option></select></label><button id="sample" class="secondary">载入合成演示</button><input id="start" type="hidden"><input id="end" type="hidden"></div><div id="state">请选择订单 CSV，或点击“载入合成演示”体验。演示订单由程序合成，不代表真实平台经营结果。</div>
 <details class="csv-guide" id="csvGuide" open>
   <summary><span><b>上传前，先准备好你的 CSV</b><small>按下面三步整理，网站就能读取并计算指标</small></span><span class="guide-toggle" aria-hidden="true"></span></summary>
@@ -233,7 +254,7 @@ svg text.mean-label{font-size:11px;fill:#788cab;paint-order:stroke;stroke:#fff;s
 const cols=['Order ID','Customer ID','Restaurant ID','Order Date and Time','Order Value','Commission Fee','Discounts and Offers','Delivery Fee','Payment Processing Fee','Refunds/Chargebacks'];
 function csv(text){const rows=[];let row=[],s='',q=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(q&&text[i+1]==='"'){s+='"';i++;}else if(q||s==='')q=!q;else throw Error('CSV 引号位置异常');}else if(c===','&&!q){row.push(s);s='';}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&text[i+1]==='\n')i++;row.push(s);if(row.some(x=>x!==''))rows.push(row);row=[];s='';}else s+=c;}if(q)throw Error('CSV 引号未闭合');row.push(s);if(row.some(x=>x!==''))rows.push(row);return rows;}
 function date(s){const m=/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::(\d{2}))?)?$/.exec(s);if(!m)return null;const a=m.slice(1).map(x=>Number(x||0)),d=new Date(Date.UTC(a[0],a[1]-1,a[2],a[3],a[4],a[5]));return d.getUTCFullYear()===a[0]&&d.getUTCMonth()===a[1]-1&&d.getUTCDate()===a[2]&&a[3]<24&&a[4]<60&&a[5]<60?{day:s.slice(0,10),hour:a[3]}:null;}
-function parse(text){const rows=csv(text.replace(/^\uFEFF/,''));if(!rows.length)throw Error('文件为空');const head=rows.shift().map(x=>x.trim());if(new Set(head).size!==head.length)throw Error('存在重复列名');const missing=cols.filter(c=>!head.includes(c));if(missing.length)throw Error('缺少字段：'+missing.join('、'));const issues=[],orders=[],seen=new Set();rows.forEach((r,i)=>{const line=i+2;if(r.length!==head.length){issues.push({line,reason:'列数与表头不一致',blocking:true});return;}const o=Object.fromEntries(head.map((c,j)=>[c,r[j].trim()]));let errors=[];['Order ID','Customer ID','Restaurant ID'].forEach(k=>{if(!o[k])errors.push(k+' 为空');});if(seen.has(o['Order ID']))errors.push('订单 ID 重复（所有同 ID 记录均暂停统计）');seen.add(o['Order ID']);const dt=date(o['Order Date and Time']);if(!dt)errors.push('下单日期无法解析（需 YYYY-MM-DD HH:mm:ss）');const nums=['Order Value','Commission Fee','Delivery Fee','Payment Processing Fee','Refunds/Chargebacks'].map(k=>{const v=o[k];const n=v!==''&&/^[+-]?(?:\d+\.?\d*|\.\d+)$/.test(v)?Number(v):NaN;if(!Number.isFinite(n)||n<0)errors.push(k+' 为空、非数值或负数');return n;});const [amount,commission,delivery,payment,refund]=nums;let discount;const offer=o['Discounts and Offers'];let m;if(/^(No Offer|None|No Discount|无优惠|0)$/i.test(offer))discount=0;else if((m=/^(\d+(?:\.\d+)?)%(?: on App| New User)?$/i.exec(offer)))discount=amount*Number(m[1])/100;else if((m=/^(\d+(?:\.\d+)?) off(?: Promo)?$/i.exec(offer)))discount=Number(m[1]);else errors.push('优惠无法识别：'+(offer||'空值'));if(errors.length)issues.push({line,reason:errors.join('；'),blocking:true});else{if(discount>amount||commission>amount||refund>amount||delivery>amount||payment>amount)issues.push({line,reason:'费用或退款超过订单原金额，请核对（保留统计）',blocking:false});orders.push({id:o['Order ID'],user:o['Customer ID'],restaurant:o['Restaurant ID'],...dt,amount,commission,delivery,payment,refund,discount,line});}});const counts=new Map();rows.forEach(r=>{const id=r[head.indexOf('Order ID')]?.trim();counts.set(id,(counts.get(id)||0)+1);});const clean=orders.filter(o=>{if(counts.get(o.id)>1){issues.push({line:o.line,reason:'订单 ID 重复，暂停统计',blocking:true});return false;}return true;});return {orders:clean,issues,total:rows.length};}
+function parse(text){const rows=csv(text.replace(/^\uFEFF/,''));if(!rows.length)throw Error('文件为空');const head=rows.shift().map(x=>x.trim());if(new Set(head).size!==head.length)throw Error('存在重复列名');const missing=cols.filter(c=>!head.includes(c));if(missing.length)throw Error('缺少字段：'+missing.join('、'));const issues=[],orders=[],seen=new Set();rows.forEach((r,i)=>{const line=i+2;if(r.length!==head.length){issues.push({line,reason:'列数与表头不一致',blocking:true});return;}const o=Object.fromEntries(head.map((c,j)=>[c,r[j].trim()]));let errors=[];['Order ID','Customer ID','Restaurant ID'].forEach(k=>{if(!o[k])errors.push(k+' 为空');});if(seen.has(o['Order ID']))errors.push('订单 ID 重复（所有同 ID 记录均暂停统计）');seen.add(o['Order ID']);const dt=date(o['Order Date and Time']);if(!dt)errors.push('下单日期无法解析（需 YYYY-MM-DD HH:mm:ss）');const nums=['Order Value','Commission Fee','Delivery Fee','Payment Processing Fee','Refunds/Chargebacks'].map(k=>{const v=o[k];const n=v!==''&&/^[+-]?(?:\d+\.?\d*|\.\d+)$/.test(v)?Number(v):NaN;if(!Number.isFinite(n)||n<0)errors.push(k+' 为空、非数值或负数');return n;});const [amount,commission,delivery,payment,refund]=nums;let discount;const offer=o['Discounts and Offers'];let m;if(/^(No Offer|None|No Discount|无优惠|0)$/i.test(offer))discount=0;else if((m=/^(\d+(?:\.\d+)?)%(?: on App| New User)?$/i.exec(offer)))discount=amount*Number(m[1])/100;else if((m=/^(\d+(?:\.\d+)?) off(?: Promo)?$/i.exec(offer)))discount=Number(m[1]);else errors.push('优惠无法识别：'+(offer||'空值'));if(errors.length)issues.push({line,reason:errors.join('；'),blocking:true});else{if(discount>amount||commission>amount||refund>amount||delivery>amount||payment>amount)issues.push({line,reason:'费用或退款超过订单原金额，请核对（保留统计）',blocking:false});orders.push({id:o['Order ID'],user:o['Customer ID'],restaurant:o['Restaurant ID'],...dt,amount,commission,delivery,payment,refund,discount,line});}});const counts=new Map();rows.forEach(r=>{const id=r[head.indexOf('Order ID')]?.trim();counts.set(id,(counts.get(id)||0)+1);});const clean=orders.filter(o=>{if(counts.get(o.id)>1){issues.push({line:o.line,reason:'订单 ID 重复，暂停统计',blocking:true});return false;}return true;});const qualityRows=rows.map((r,i)=>{const dt=r.length===head.length?date(r[head.indexOf('Order Date and Time')]?.trim()||''):null;const related=issues.filter(x=>x.line===i+2);return {line:i+2,day:dt?.day||null,blocking:related.some(x=>x.blocking),warning:related.some(x=>!x.blocking),hasIssue:related.length>0};});return {orders:clean,issues,total:rows.length,qualityRows};}
 const sum=(a,k)=>a.reduce((s,o)=>s+o[k],0);function metrics(orders,start,end){const a=orders.filter(o=>o.day>=start&&o.day<=end),users=new Map(),restaurants=new Map(),daily=new Map(),hours=Array(24).fill(0);const days=Math.round((Date.parse(end)-Date.parse(start))/86400000)+1;if(!Number.isFinite(days)||days<1||days>3660)throw Error('请选择有效日期，窗口不超过 10 年');for(let i=0;i<days;i++){const day=new Date(Date.parse(start)+i*86400000).toISOString().slice(0,10);daily.set(day,{day,count:0,amount:0,users:new Set(),restaurants:new Set()});}a.forEach(o=>{if(!users.has(o.user))users.set(o.user,{count:0,refund:false});const u=users.get(o.user);u.count++;u.refund ||= o.refund>0;restaurants.set(o.restaurant,(restaurants.get(o.restaurant)||0)+1);const d=daily.get(o.day);d.count++;d.amount+=o.amount;d.users.add(o.user);d.restaurants.add(o.restaurant);hours[o.hour]++;});const segments=[0,0,0,0];users.forEach(u=>segments[(u.count>1?2:0)+(u.refund?1:0)]++);return {a,n:a.length,amount:sum(a,'amount'),commission:sum(a,'commission'),discount:sum(a,'discount'),delivery:sum(a,'delivery'),payment:sum(a,'payment'),refund:sum(a,'refund'),refundCount:a.filter(o=>o.refund>0).length,users:users.size,repeat:segments[2]+segments[3],restaurants,segments,daily:[...daily.values()],hours,days};}
 root.FoodEngine={parse,metrics,date};if(typeof module!=='undefined')module.exports=root.FoodEngine;
 })(globalThis);
@@ -387,10 +408,12 @@ function setupLayout(){
   const grids=[...content.querySelectorAll(':scope > .grid')];
   grids[1].classList.add('demand-grid');
   const views=new Map();
+  const comparisonReport=MonthlyMonitor.report(dataset,$('month').value,Number($('stability').value)/100);
   definitions.forEach(([key],i)=>{
     const view=document.createElement('div');
     view.id='view-'+key;view.className='analysis-view';view.setAttribute('role','tabpanel');view.setAttribute('aria-labelledby','tab-'+key);
     if(i<4)view.append(grids[i]);else view.append($('quality'));
+    view.insertAdjacentHTML('afterbegin',comparisonMarkup(key,comparisonReport));
     content.append(view);views.set(key,view);
   });
   const profit=$('costDiscount').closest('.panel');
@@ -417,6 +440,61 @@ function setupLayout(){
     };
   });
   activate(views.has(activeView)?activeView:'overview');
+}
+
+
+function comparisonValues(m){
+  const div=(a,b)=>b?a/b:null;
+  const restaurantDays=m.daily.reduce((s,d)=>s+d.restaurants.size,0);
+  const restaurants=[...m.restaurants.values()];
+  return {amount:m.amount,orders:m.n,aov:div(m.amount,m.n),commission:m.commission,
+    users:m.users,frequency:div(m.n,m.users),dailyUsers:m.daily.reduce((s,d)=>s+d.users.size,0)/m.days,
+    restaurants:m.restaurants.size,dailyRestaurants:restaurantDays/m.days,ordersPerRestaurantDay:div(m.n,restaurantDays),
+    lowRestaurantRate:div(restaurants.filter(n=>n<=2).length,restaurants.length),
+    repeat:m.repeat,repeatRate:div(m.repeat,m.users),refundRate:div(m.refundCount,m.n),refundAmountRate:div(m.refund,m.amount)};
+}
+function periodQuality(data,start,end){
+  const rows=(data.qualityRows||[]).filter(row=>row.day&&row.day>=start&&row.day<=end);
+  return {rawRows:rows.length,issueRows:rows.filter(r=>r.hasIssue).length,blockedRows:rows.filter(r=>r.blocking).length,
+    warningRows:rows.filter(r=>r.warning).length,issueRate:rows.length?rows.filter(r=>r.hasIssue).length/rows.length:null};
+}
+function comparisonChange(current,previous,rate=false,decimals=0){
+  if(current===null||previous===null||current===undefined||previous===undefined)return '<span class="compare-delta neutral">— 暂不可比</span>';
+  const delta=current-previous;
+  if(Math.abs(delta)<1e-10)return '<span class="compare-delta neutral" aria-label="持平">→ 持平</span>';
+  const direction=delta>0?'up':'down',arrow=delta>0?'↑':'↓';
+  const signed=n=>(n>0?'+':'')+fmt(n,rate?2:decimals);
+  const text=rate?signed(delta*100)+' 个百分点':previous===0?signed(delta)+'（上期为 0）':(delta>0?'+':'')+fmt(delta/previous*100,2)+'%';
+  return `<span class="compare-delta ${direction}" aria-label="${delta>0?'上升':'下降'}">${arrow} ${text}</span>`;
+}
+function comparisonMarkup(key,r){
+  if(!r)return '';
+  const current=r.current||r.observed,base=r.base;
+  const a=comparisonValues(current),b=base?comparisonValues(base):null;
+  const definitions={
+    overview:[['订单金额','amount',2,'金额'],['订单量','orders',0,'单'],['客单价','aov',2,'金额 / 单'],['佣金收入','commission',2,'金额']],
+    demand:[['下单人数','users',0,'人'],['人均下单频次','frequency',3,'单 / 人'],['日均下单用户数','dailyUsers',2,'人 / 日'],['订单量','orders',0,'单']],
+    restaurant:[['有单餐厅数','restaurants',0,'家'],['日均有单餐厅数','dailyRestaurants',2,'家 / 日'],['有单餐厅店均日单量','ordersPerRestaurantDay',3,'单 / 家日'],['1–2 单餐厅占比','lowRestaurantRate',2,'%',true]],
+    user:[['复购用户数','repeat',0,'人'],['复购用户率','repeatRate',2,'%',true],['退款/拒付涉及订单率','refundRate',2,'%',true],['退款/拒付金额占比','refundAmountRate',2,'%',true]],
+    quality:[['可归期原始行数','rawRows',0,'行'],['问题行数','issueRows',0,'行'],['暂停统计行数','blockedRows',0,'行'],['问题行率','issueRate',2,'%',true]]
+  };
+  if(key==='quality'){
+    Object.assign(a,periodQuality(dataset,current.daily[0].day,current.daily.at(-1).day));
+    if(b)Object.assign(b,periodQuality(dataset,base.daily[0].day,base.daily.at(-1).day));
+  }
+  const display=(v,decimals,isRate)=>v===null||v===undefined?'—':fmt(v*(isRate?100:1),decimals)+(isRate?'%':'');
+  const cards=definitions[key].map(([label,field,decimals,unit,isRate])=>`<div class="compare-card"><h4>${label}<small>${isRate?'比例':unit}</small></h4><dl><div><dt>本期</dt><dd>${display(a[field],decimals,isRate)}</dd></div><div><dt>上期</dt><dd>${display(b?.[field],decimals,isRate)}</dd></div></dl>${comparisonChange(a[field],b?.[field],isRate,decimals)}</div>`).join('');
+  let note=key==='restaurant'?'店均日单量 = 订单量 ÷ 每日有单餐厅数之和（按餐厅有单天数加权）；1–2 单餐厅按各自比较窗口重新分组。':key==='user'?'复购与售后指标分别按两期窗口重算；比例变化使用百分点。':key==='demand'?'日均下单用户数 = 每日去重人数之和 ÷ 观察天数，包含无单日。':'';
+  if(key==='quality'){
+    const unknown=(dataset.qualityRows||[]).filter(row=>!row.day).length;
+    note=`原始行按可解析的下单日期归期，重复订单各行均计入；问题行按行去重。文件中另有 ${unknown} 行无法确定日期，不计入任一月份，未填零归期。问题行率 = 问题行数 ÷ 可归期原始行数。`;
+  }
+  const coverage=base?`本期 ${current.daily[0].day} — ${current.daily.at(-1).day} · 上期 ${base.daily[0].day} — ${base.daily.at(-1).day}`:`本期 ${current.daily[0].day} — ${current.daily.at(-1).day} · 无上月可比范围`;
+  const limitations=[];
+  if(base&&current.days!==base.days)limitations.push(`本期 ${current.days} 天 / 上期 ${base.days} 天`);
+  if(r.status==='quality'&&key!=='quality')limitations.push('仅覆盖可分析订单，文件存在暂停统计行');
+  if(r.status==='insufficient'&&base)limitations.push('展示原始变化，未应用月度小结的样本量判定');
+  return `<section class="period-comparison" aria-label="与上月数据对比"><div class="compare-heading"><h3>与上月对比</h3><span>${r.mode==='matched'?'同日范围':r.mode==='full'?'整月范围':'无可比基期'}</span></div><p class="compare-range">${coverage}${limitations.length?' · '+limitations.join(' · '):''}</p><div class="comparison-grid">${cards}</div>${note?`<p class="comparison-note">${note}</p>`:''}<p class="comparison-note">↑ 数值上升　↓ 数值下降　→ 数值持平；仅表示数值方向。非比例指标变化为相对上期变化率，比例指标变化为百分点。</p></section>`;
 }
 </script><script>function monthlyLabel(month){return Number(month.slice(0,4))+' 年 '+Number(month.slice(5))+' 月';}
 function monthlyRate(n){return n===null?'暂不可比':(n>0?'+':'')+fmt(n*100,2)+'%';}
