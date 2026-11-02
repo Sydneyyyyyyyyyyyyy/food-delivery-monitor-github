@@ -49,24 +49,4 @@ python scripts/build.py
 node tests/smoke.cjs
 ```
 
-技术实现为 HTML、CSS、原生 JavaScript 与 SVG；计算在浏览器本地完成，没有后端、外部图表依赖或数据上传接口。CSV 仅保留在当前页面内存中，刷新后需重新导入；本项目不提供后台定时采集。
-
-## 文件结构
-
-```text
-index.html             可直接打开、用于 GitHub Pages 的完整页面
-README.md              项目介绍
-DEPLOY.md              GitHub 上传与发布步骤
-DATA.md                演示数据与上传说明
-src/                   可编辑的 HTML 与 JavaScript 源码
-data/demo.csv          明确标注的合成演示订单
-data/upload-template.csv 空白 CSV 模板
-scripts/build.py       从源码生成根目录页面
-tests/smoke.cjs        核心口径与展示脚本检查
-```
-
-## 在线作品展示
-
-发布步骤见 [DEPLOY.md](DEPLOY.md)。部署后，可把 Pages 地址填写到仓库 About 的 Website 中，也可同时在简历中列出在线演示和源码链接。
-
-此仓库包未包含本地原始订单文件、私人目录路径、账号或凭据。若未来加入其他公开数据，请先补充来源和再分发许可；关于演示数据见 [DATA.md](DATA.md)。
+技术实现为 HTML、CSS、原生 JavaScript 与 SVG；计算在浏览器本地完成，没有后端、外部图表依赖或数据上传接口。CSV 仅保留在当前页面内存中，刷新后需重新导入。
