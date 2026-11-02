@@ -1,0 +1,233 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>外卖平台指标监测仪</title><style>
+
+:root{--blue:#3268e8;--ink:#1c2d4a;--muted:#71819c;--line:#e3eaf5;--bg:#f3f6fc;--shadow:0 4px 24px #213b6a06}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);background:radial-gradient(ellipse at 90% 0,#e6efff 0,transparent 42%),var(--bg);font:14px/1.7 'Times New Roman','Microsoft YaHei',sans-serif}
+button,input,select{font:inherit}
+button,.upload,a,input,select,summary{-webkit-tap-highlight-color:transparent}
+header{background:#fff;border-bottom:1px solid var(--line);padding:23px max(4%,calc((100vw - 1310px)/2));display:flex;justify-content:space-between;align-items:center;gap:20px}
+header>div{position:relative;padding-left:58px}
+header>div::before{content:'';position:absolute;left:0;top:2px;width:42px;height:44px;border-radius:13px;background:linear-gradient(145deg,#4a86ff,#2859cc);box-shadow:0 5px 12px #3268e826}
+header>div::after{content:'';position:absolute;left:12px;top:15px;width:5px;height:16px;background:#fff;border-radius:2px;box-shadow:8px -5px #fff,16px 3px #ffffffa8}
+h1{font-size:22px;line-height:1.4;font-weight:700;letter-spacing:.035em;margin:0}
+header small{display:block;font-size:10px;letter-spacing:.18em;color:#8b9bb4;margin-top:4px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:#f0f5ff;color:#4b6c9c;border:1px solid #e2eaff;padding:6px 12px;border-radius:30px;white-space:nowrap;font-size:12px}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#4c86ee;box-shadow:0 0 0 3px #4c86ee12}
+main{max-width:1420px;margin:auto;padding:32px 4%}
+.intro{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:24px}
+h2{font-size:23px;letter-spacing:.01em;line-height:1.5;margin:0 0 7px;font-weight:650}
+p{margin:7px 0;color:var(--muted)}
+.intro p{font-size:13px}
+button,.upload{cursor:pointer;border:1px solid transparent;border-radius:9px;background:var(--blue);color:#fff;padding:9px 17px;display:inline-block;transition:background .18s,box-shadow .18s,border-color .18s}
+button:hover,.upload:hover{background:#2456cc;box-shadow:0 4px 12px #3268e821}
+.upload{padding:11px 20px;font-weight:600;box-shadow:0 4px 12px #3268e820;white-space:nowrap}
+.upload:focus-within,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #9bbcff;outline-offset:3px}
+button.secondary{background:#f3f6fc;color:#546d94;border-color:#e6edf8}
+button.secondary:hover{background:#eaf1ff;border-color:#ccdbf7;box-shadow:none}
+input,select{border:1px solid #dfe7f3;border-radius:8px;padding:8px 10px;background:#fff;color:#39506f;min-width:0;color-scheme:light;accent-color:var(--blue)}
+input[type=file]{display:none}
+.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#ffffffc9;border:1px solid var(--line);border-radius:12px;padding:15px 18px;box-shadow:var(--shadow)}
+.toolbar>span:first-child{font-weight:600;color:#496282;margin-right:6px}
+.toolbar>span{color:#95a4ba;font-size:12px}
+#state{margin:12px 2px 22px;font-size:12px;color:#8492a9}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:18px 0 28px}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:23px 25px;box-shadow:var(--shadow)}
+.card{position:relative;cursor:default;outline:none;transition:border-color .18s,box-shadow .18s,background .18s}
+.cards .card::after{content:'';position:absolute;right:24px;top:26px;width:9px;height:9px;border:4px solid #eaf0ff;border-radius:5px;background:#6c97f6}
+.card:hover,.card:focus-visible{border-color:#a2bdf6;background:#f8faff;box-shadow:0 8px 26px #3268e815;z-index:3}
+.label{color:#6b7e9a;font-size:13px}
+.value{font-size:30px;font-weight:650;font-variant-numeric:tabular-nums;letter-spacing:-.035em;line-height:1.4;margin:10px 0 0}
+.north-star{margin-top:10px;padding:27px 32px 30px;background:radial-gradient(ellipse at 100% 100%,#427ef1 0,transparent 65%),linear-gradient(115deg,#1a3f8b,#285dd1);border-color:#315ec1;box-shadow:0 9px 24px #214fab17;color:#fff;isolation:isolate}
+.north-star::after{content:'✦';position:absolute;right:44px;top:50%;transform:translateY(-50%);font-size:102px;font-weight:400;line-height:1;color:#ffffff20;pointer-events:none;z-index:-1}
+.north-star .label{color:#d2e0ff;font-weight:500;letter-spacing:.055em}
+.north-star .value{font-size:46px;line-height:1.2;margin:13px 0 0;color:#fff;letter-spacing:-.025em}
+.north-star:hover,.north-star:focus-visible{background:radial-gradient(ellipse at 100% 100%,#528af9 0,transparent 65%),linear-gradient(115deg,#204b9c,#3067df);border-color:#8db2ff;box-shadow:0 9px 28px #285dd12b}
+.metric-tip{position:absolute;left:20px;top:calc(100% - 4px);max-width:calc(100% - 40px);padding:10px 15px;border:1px solid #3b547b;border-radius:9px;background:#213a61;color:#fff;font-size:12px;letter-spacing:0;line-height:1.7;box-shadow:0 5px 20px #18355b24;opacity:0;visibility:hidden;pointer-events:none;z-index:5;transition:opacity .15s}
+.card:hover .metric-tip,.card:focus-visible .metric-tip{opacity:1;visibility:visible}
+nav{display:flex;gap:6px;padding:6px;border:1px solid #e0e8f6;border-radius:12px;background:#eaf0fa;margin:0 0 22px}
+nav button{position:relative;flex:1;color:#70829e;background:transparent;border:0;border-radius:8px;padding:12px 8px;font-size:13px;white-space:nowrap;transition:background .15s,color .15s,box-shadow .15s}
+nav button:hover,nav button:focus-visible{background:#f6f9ff;color:var(--blue);box-shadow:none}
+nav button[aria-selected=true]{background:#fff;color:#2c62d9;box-shadow:0 2px 6px #2846770b;font-weight:650}
+nav button[aria-selected=true]::after{content:'';position:absolute;bottom:5px;left:calc(50% - 9px);width:18px;height:2px;background:#4a7bed;border-radius:2px}
+[hidden]{display:none!important}
+.analysis-view{animation:reveal .18s ease-out}
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;margin-bottom:20px}
+.panel h3{margin:0;font-size:16px;line-height:1.5;font-weight:650;letter-spacing:.01em;display:flex;align-items:center;gap:10px}
+.panel h3::before{content:'';display:inline-block;width:4px;height:15px;border-radius:3px;background:#6490ef;flex:none}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.note{font-size:12px;line-height:1.8;color:#8290a7}
+.panel>p.note{margin-top:8px}
+.chart{height:235px;margin-top:20px}
+svg{width:100%;height:100%;overflow:visible}
+svg text{font:11px 'Times New Roman','Microsoft YaHei';fill:#8292ac}
+.barrow{display:grid;grid-template-columns:110px 1fr 95px;gap:12px;align-items:center;margin:20px 0;font-size:13px}
+.barrow>span:last-child{color:#52709b;text-align:right;font-variant-numeric:tabular-nums}
+.track{background:#edf2fc;height:9px;border-radius:8px;overflow:hidden}
+.fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#4279e9,#8db3ff)}
+.alert{border:1px solid #efdfbf;border-left:3px solid #c6a05d;border-radius:8px;background:#fffbf2;padding:13px 16px;margin:16px 0;color:#8b6c35;font-size:13px}
+.good{background:#f1f6ff;border-color:#dbe7ff;border-left-color:#6c97ed;color:#4e6e9d}
+details{margin-top:17px}
+summary{cursor:pointer;color:#587297;font-size:13px;padding:3px 0}
+summary:hover{color:var(--blue)}
+summary::marker{color:#8ba7d0}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:13px;font-variant-numeric:tabular-nums}
+td,th{text-align:left;border-bottom:1px solid #eaf0f8;padding:11px 12px}
+th{background:#f5f8fe;color:#6b80a0;font-weight:500}
+tbody tr:hover td{background:#f8faff}
+.quality-overview{display:flex;gap:14px;align-items:baseline;margin:22px 0 14px}
+.quality-overview strong{font-size:40px;color:#b08a48;line-height:1.2;font-variant-numeric:tabular-nums}
+.quality-overview span{color:#71819c;font-size:13px}
+.issue-types{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.issue-types>span{background:#f6f8fd;color:#667a99;border:1px solid #e1e9f6;border-radius:8px;padding:9px 13px;font-size:13px}
+.issue-types b{margin-left:14px;color:#3e65a4;font-weight:600}
+#quality>details{border-top:1px solid var(--line);padding-top:15px}
+.assumptions{display:flex;flex-wrap:wrap;gap:18px;margin:18px 0;color:#607591;font-size:13px}
+.assumptions input{vertical-align:middle;margin:0 5px 2px 0}
+.empty{padding:65px 24px;text-align:center;color:#5875a0;border-style:dashed;background:#ffffff9c}
+.empty p{font-size:12px;margin-top:10px}
+footer{font-size:11px;line-height:1.9;color:#93a0b5;margin:28px 2px 10px;padding-top:18px;border-top:1px solid #e2e9f4}
+a{color:var(--blue)}
+@keyframes reveal{from{opacity:.55}to{opacity:1}}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.intro{align-items:flex-start}.toolbar{gap:10px}}
+@media(max-width:600px){header{padding:20px;gap:12px;align-items:flex-start}header>div{padding-left:46px}header>div::before{width:34px;height:38px;border-radius:10px}header>div::after{left:8px;top:13px;height:13px}h1{font-size:17px}header small{font-size:8px;letter-spacing:.08em}.badge{font-size:10px;padding:4px 7px}.badge::before{display:none}main{padding:24px 18px}.intro{flex-direction:column;gap:16px}h2{font-size:21px}.intro .upload{align-self:flex-end}.toolbar{padding:14px;gap:8px}.toolbar>span:first-child{width:100%}.toolbar input{max-width:42%;font-size:12px}.toolbar button{font-size:12px;padding:8px 10px}.cards{grid-template-columns:1fr;gap:12px}.card,.panel{padding:21px}.north-star{padding:24px}.north-star .value{font-size:37px}.north-star::after{right:25px;font-size:80px}nav{flex-wrap:wrap;gap:4px}nav button{flex:1 0 30%;padding:12px 6px}.metric-tip{max-width:calc(100% - 30px)}.barrow{grid-template-columns:100px 1fr 75px;gap:8px;font-size:12px}.chart{height:210px}td,th{padding:9px 5px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+
+.csv-guide{margin:20px 0 24px;border:1px solid #dce6f7;border-radius:15px;background:#fff;box-shadow:var(--shadow)}
+.csv-guide>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 25px;color:#294c84}
+.csv-guide>summary::-webkit-details-marker{display:none}
+.csv-guide>summary b{display:block;font-size:16px;font-weight:650}
+.csv-guide>summary small{display:block;font-size:12px;color:#8295b1;margin-top:4px;font-weight:400}
+.guide-toggle{flex:none;width:26px;height:26px;border-radius:50%;background:#edf3ff;display:grid;place-items:center}
+.guide-toggle::after{content:'＋';font-size:17px;color:#4977c9}
+.csv-guide[open] .guide-toggle::after{content:'−'}
+.guide-body{padding:0 25px 24px}
+.guide-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:22px 0;border-top:1px solid #edf1f8}
+.step-number{font-size:11px;letter-spacing:.08em;color:#5c88d9;background:#edf3ff;border-radius:6px;padding:4px 8px;font-weight:600}
+.guide-steps h3{font-size:14px;margin:12px 0 6px;font-weight:650;color:#375378}
+.guide-steps p{font-size:12px;line-height:1.9;margin:0;color:#71839f}
+.template-download{display:inline-block;margin-top:12px;border:1px solid #d5e2fc;border-radius:7px;padding:7px 12px;text-decoration:none;background:#f4f7ff;font-size:12px;font-weight:600;color:#3e6bc3}
+.template-download:hover{background:#eaf1ff;border-color:#a8c1f1}
+.guide-reminder{font-size:12px;background:#f2f6ff;border-left:3px solid #8daeed;color:#5c749a;padding:11px 14px;border-radius:6px;line-height:1.9}
+.field-guide{border-top:1px solid #edf1f8;padding-top:13px;margin-top:17px}
+.guide-table{overflow-x:auto}
+.guide-table table{min-width:780px}
+.guide-table th{white-space:nowrap}
+.guide-table td{vertical-align:top}
+.guide-table td:first-child,.guide-table td:nth-child(3){white-space:nowrap}
+.csv-guide code{font-family:'Times New Roman','Microsoft YaHei',serif;font-size:12px;color:#3f68a9;background:#f0f5ff;padding:2px 4px;border-radius:4px}
+.guide-checklist{padding-left:20px;font-size:12px;color:#71839f;line-height:1.9}
+.guide-checklist li{margin:10px 0}
+.guide-checklist strong{color:#486487;font-weight:600}
+.guide-footnote{font-size:11px;color:#8b9ab1;margin:19px 0 0}
+@media(max-width:700px){.guide-steps{grid-template-columns:1fr;gap:20px}.csv-guide>summary{padding:19px}.guide-body{padding:0 19px 20px}}
+
+
+.toolbar button:disabled{opacity:.4;cursor:default;box-shadow:none}
+.stability-label{display:flex;gap:7px;align-items:center;color:#71839f;font-size:12px;margin-left:auto}
+.stability-label select{font-size:12px;padding:7px 9px}
+.monthly-summary{--status:#3d6bc0;border:1px solid #cfdff7;border-top:4px solid var(--status);border-radius:16px;background:linear-gradient(120deg,#fff 50%,#f3f7ff);padding:25px 29px;margin:6px 0 24px;box-shadow:0 9px 28px #285dd10a}
+.monthly-summary.up{--status:#2b6bd7}.monthly-summary.down{--status:#c57a45}.monthly-summary.stable{--status:#617cc2}
+.monthly-summary.quality,.monthly-summary.insufficient{--status:#ac8b4f}
+.monthly-top{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.monthly-eyebrow{font-size:12px;color:#7390b8;letter-spacing:.08em}
+.monthly-top h2{font-size:16px;margin:3px 0 0;color:#5a7194;font-weight:500}
+.monthly-state{padding:5px 12px;border:1px solid #dce5f5;border-radius:24px;background:white;color:var(--status);font-size:12px;font-weight:600}
+.month-conclusion{display:flex;justify-content:space-between;align-items:center;gap:24px;margin:21px 0 23px}
+.month-conclusion h3{font-size:25px;line-height:1.5;letter-spacing:.01em;color:#244b84;margin:0 0 9px}
+.down .month-conclusion h3{color:#a5683f}
+.month-conclusion p{font-size:13px;line-height:1.9;margin:0;max-width:700px}
+.month-change{flex:none;text-align:right;min-width:190px}
+.month-change strong{font-size:37px;line-height:1.35;font-variant-numeric:tabular-nums;font-weight:650;color:var(--status);letter-spacing:-.025em}
+.month-change span{display:block;font-size:11px;color:#8296b2;margin-top:4px}
+.month-content{display:grid;grid-template-columns:1.1fr 1fr;gap:22px;border-top:1px solid #e6edf8;padding-top:19px}
+.month-content h4{font-size:12px;letter-spacing:.03em;color:#5677a5;margin:0 0 9px;font-weight:600}
+.month-content ul{font-size:13px;line-height:1.9;color:#637d9e;margin:0;padding-left:17px}
+.month-content li+li{margin-top:6px}
+.month-action{background:#eaf1ffb0;padding:16px 19px;border-radius:10px}
+.month-action p{font-size:13px;color:#486b9c;line-height:1.9;margin:0}
+.month-coverage{font-size:11px;margin:17px 0 0;color:#8a9ab1}
+.month-method{border-top:1px solid #e7edf7;padding-top:12px}
+.month-method p{font-size:12px;line-height:1.9}
+.month-history{display:flex;gap:8px;flex-wrap:wrap;margin:19px 0 0}
+.month-pill{display:flex;flex-direction:column;gap:3px;align-items:flex-start;padding:9px 14px;border-radius:9px;border:1px solid #e0e8f5;background:#fff;color:#607b9e;box-shadow:none;font-size:12px}
+.month-pill small{font-size:10px;color:#93a2ba}
+.month-pill:hover,.month-pill.selected{background:#edf3ff;border-color:#a9c4f1;color:#3e6bc0;box-shadow:none}
+.month-pill.selected small{color:#6389c7}
+@media(max-width:760px){.month-conclusion{align-items:flex-start;flex-direction:column;gap:14px}.month-change{text-align:left}.month-content{grid-template-columns:1fr}.monthly-summary{padding:21px}.month-conclusion h3{font-size:22px}.stability-label{margin-left:0}.month-change strong{font-size:31px}}
+
+
+/* Serif numerals with a clear hierarchy for Chinese labels. */
+:root{--data-font:'Times New Roman','Microsoft YaHei',serif}
+body,button,input,select,summary,code,svg text{font-family:var(--data-font)}
+h1{font-weight:700;letter-spacing:.055em}
+h2{font-weight:650}
+.panel h3{font-size:17px;font-weight:650;letter-spacing:.025em}
+.panel>p.note{margin-bottom:14px;line-height:1.9}
+.label,.stat-caption{font-weight:500;letter-spacing:.035em}
+.value,.month-change strong,.quality-overview strong,.stat-number,.structure-metric strong,.structure-result strong{font-family:var(--data-font);font-variant-numeric:lining-nums tabular-nums;font-weight:700;letter-spacing:-.015em}
+.value{font-size:33px}.north-star .value{font-size:50px}
+header small{font-size:11px;letter-spacing:.13em}
+.csv-guide code{font-family:var(--data-font);font-size:13px}
+.panel{box-shadow:0 5px 24px #244e9005}
+.demand-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.demand-grid .panel{min-width:0}
+.demand-grid .chart{height:250px;margin-top:18px}
+.structure-metrics{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);align-items:center;gap:8px;margin:23px 0 17px}
+.structure-metric{padding:18px 16px;background:linear-gradient(145deg,#f1f6ff,#f9fbff);border:1px solid #e0e9f8;border-radius:12px;min-width:0}
+.structure-metric>span{font-size:12px;font-weight:500;letter-spacing:.025em;color:#6983a8}
+.structure-metric>div{display:flex;align-items:baseline;gap:7px;margin:7px 0 4px;flex-wrap:wrap}
+.structure-metric strong{font-size:33px;line-height:1.25;color:#345f9f}
+.structure-metric small{font-size:11px;color:#899bb5}
+.structure-metric p{font-size:10px;color:#8a9cb6;margin:0}
+.structure-times{text-align:center;font-size:24px;color:#a3b8d6}
+.structure-result{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-top:1px solid #e6edf7;padding-top:16px;color:#7b91af;font-size:12px}
+.structure-result strong{font-size:25px;color:#406798}
+.structure-result small{font-size:11px;font-weight:400}
+.extrema-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.extrema-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.stat-tile{border:1px solid #e5ecf7;background:#f8faff;border-radius:10px;padding:13px 14px;min-width:0}
+.stat-tile.peak{background:#eff5ff;border-color:#dbe6fa}
+.stat-tile.trough{background:#f7f9fd}
+.stat-tile.average{background:#f4f7fc}
+.stat-caption{display:block;font-size:11px;color:#7187a7}
+.stat-number{color:#3c68aa;font-size:28px;line-height:1.3;margin:5px 0;white-space:nowrap}
+.stat-number small{font-size:10px;font-weight:400;color:#8b9db7;margin-left:7px;letter-spacing:0}
+.stat-period{font-size:11px;color:#7d94b4;line-height:1.6;display:block;overflow-wrap:anywhere}
+.extrema-note{font-size:11px;color:#8a9cb5;line-height:1.9;margin-top:12px}
+.extrema-ties{margin-top:8px}.extrema-ties summary{font-size:11px}.extrema-ties p{font-size:11px;line-height:1.9}
+svg text.extreme-chart-label{font-size:12px;font-weight:700;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+svg text.peak-label{fill:#285fd2}svg text.low-label{fill:#6f8eb8}
+svg text.mean-label{font-size:11px;fill:#788cab;paint-order:stroke;stroke:#fff;stroke-width:4px}
+@media(max-width:1100px){.demand-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.north-star .value{font-size:41px}.structure-metric{padding:14px 11px}.structure-metric strong{font-size:30px}.structure-metrics{gap:4px;grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr)}.stat-tile{padding:11px 9px}.stat-number{font-size:24px}.stat-number small{margin-left:4px}.demand-grid .chart{height:220px}}
+
+</style></head><body><header><div><h1>外卖平台指标监测仪</h1><small>FOOD DELIVERY · BUSINESS MONITOR</small></div><span class="badge">本地数据 · 自动计算</span></header><main><div class="intro"><div><h2>看清每一笔订单背后的经营变化</h2><p>从交易规模到用户与餐厅，让数据成为可追溯的经营信号。</p></div><label class="upload">＋ 上传订单 CSV<input id="upload" type="file" accept=".csv,text/csv"></label></div><div class="toolbar"><span>分析月份</span><input id="month" type="month" aria-label="分析月份"><button id="apply">查看本月</button><button id="prevMonth" class="secondary" disabled>上个月</button><button id="nextMonth" class="secondary" disabled>下个月</button><label class="stability-label">平稳区间 <select id="stability" aria-label="月度金额平稳区间"><option value="3">±3%</option><option value="5" selected>±5%</option><option value="10">±10%</option></select></label><button id="sample" class="secondary">载入合成演示</button><input id="start" type="hidden"><input id="end" type="hidden"></div><div id="state">请选择订单 CSV，或点击“载入合成演示”体验。演示订单由程序合成，不代表真实平台经营结果。</div>
+<details class="csv-guide" id="csvGuide" open>
+  <summary><span><b>上传前，先准备好你的 CSV</b><small>按下面三步整理，网站就能读取并计算指标</small></span><span class="guide-toggle" aria-hidden="true"></span></summary>
+  <div class="guide-body">
+    <div class="guide-steps">
+      <div><span class="step-number">01</span><h3>对齐列名</h3><p>下载空白模板，把自己的数据复制到对应列。第一行保留英文列名，大小写、空格和标点需与模板一致；列的顺序可以调整。</p><a class="template-download" href="data:text/csv;charset=utf-8,%EF%BB%BFOrder%20ID%2CCustomer%20ID%2CRestaurant%20ID%2COrder%20Date%20and%20Time%2COrder%20Value%2CCommission%20Fee%2CDiscounts%20and%20Offers%2CDelivery%20Fee%2CPayment%20Processing%20Fee%2CRefunds/Chargebacks%0D%0A" download="订单上传空白模板.csv">↓ 下载空白 CSV 模板</a></div>
+      <div><span class="step-number">02</span><h3>整理内容与格式</h3><p>每行一笔订单，保留稳定的用户、餐厅编号。日期包含真实小时；金额只填非负数字，不带货币符号或千位逗号，整份文件使用同一金额单位。</p></div>
+      <div><span class="step-number">03</span><h3>保存并上传</h3><p>将表格另存为 <strong>CSV UTF-8（逗号分隔）</strong>，不要只修改文件后缀。然后点击页面右上角“上传订单 CSV”，选择文件，再选择分析月份并查看月度小结和数据质量提示。</p></div>
+    </div>
+    <div class="guide-reminder">没有发生的费用，确认后填 <code>0</code>；未知金额请先核对，不能为了导入而改成 0。无优惠填 <code>None</code>，不要留空。</div>
+    <details class="field-guide"><summary>查看 10 个必需字段、填写示例与规则</summary>
+      <p class="note">以下数字仅为格式示例。可以将自己的中文表头改成对应英文列名，或复制数据到模板相应列。</p>
+      <div class="guide-table"><table><thead><tr><th>网站识别的列名</th><th>你的数据含义</th><th>填写示例</th><th>填写规则</th></tr></thead><tbody><tr><td><code>Order ID</code></td><td>订单编号</td><td><code>ORD001</code></td><td>一笔订单一行；编号不能重复或留空。</td></tr><tr><td><code>Customer ID</code></td><td>用户编号</td><td><code>C001</code></td><td>同一用户始终使用同一编号，用于去重与复购计算。</td></tr><tr><td><code>Restaurant ID</code></td><td>餐厅编号</td><td><code>R001</code></td><td>同一家餐厅始终使用同一编号。</td></tr><tr><td><code>Order Date and Time</code></td><td>下单时间</td><td><code>2024-01-01 12:30:00</code></td><td>年-月-日 时:分:秒；保留真实下单时刻，用于小时分析。</td></tr><tr><td><code>Order Value</code></td><td>订单原金额</td><td><code>100.00</code></td><td>按订单原金额填写，不能直接用优惠后实付金额替代。</td></tr><tr><td><code>Commission Fee</code></td><td>佣金收入</td><td><code>15.00</code></td><td>填写金额，不填佣金比例；例如 15%，需先按业务口径换算为金额。</td></tr><tr><td><code>Discounts and Offers</code></td><td>优惠</td><td><code>10%</code></td><td>无优惠填 None；减免 10% 填 10%；固定减免 50 填 50 off Promo。</td></tr><tr><td><code>Delivery Fee</code></td><td>配送费</td><td><code>5.00</code></td><td>填写源数据配送费金额；其是否属于平台成本在情景分析中设置。</td></tr><tr><td><code>Payment Processing Fee</code></td><td>支付手续费</td><td><code>2.00</code></td><td>填写该订单的支付手续费金额。</td></tr><tr><td><code>Refunds/Chargebacks</code></td><td>退款 / 拒付合并金额</td><td><code>0</code></td><td>无退款或拒付且已确认时填 0；存在时填合并金额，不填“是/否”。</td></tr></tbody></table></div>
+      <p class="note">这 10 列都必须存在。可以保留其他列；Delivery Date and Time（送达时间）与 Payment Method（支付方式）目前不参与核心指标计算。编号有前导零时，请在整理表格时保留，例如 001 不要变成 1。</p>
+    </details>
+    <details class="field-guide"><summary>常见问题：哪些内容需要先修改？</summary>
+      <ul class="guide-checklist">
+        <li><strong>中文或不同的表头：</strong>按字段表改成精确英文名称。表头只保留一行，去掉报表标题、合并单元格、汇总行及备注行。</li>
+        <li><strong>日期是 2024/1/1 或带时区：</strong>整理为 <code>2024-01-01 12:30:00</code>，不要把所有时间补成 00:00:00，否则小时分布会失真。网站按原始时刻分析，不自动换算时区。</li>
+        <li><strong>金额是 ¥100、1,000 或 15%：</strong>改成金额数字，例如 <code>100</code>、<code>1000</code>；费用比例须先换算为对应金额。不要把不同币种直接混在一起。</li>
+        <li><strong>优惠写成“9 折”或“减 50”：</strong>9 折代表减免 10%，填 <code>10%</code>；固定减免 50 填 <code>50 off Promo</code>。复杂的满减、叠加优惠不要强行套用，需先明确实际优惠口径。</li>
+        <li><strong>同一订单拆成商品明细多行：</strong>先按订单编号汇总为一行，并核对订单级金额，避免重复加总费用。重复编号的所有记录会暂停统计。</li>
+        <li><strong>金额或必需信息缺失：</strong>回到数据来源补齐。缺少必需列会阻止导入；日期、数值、优惠等无法识别的记录会列入问题明细，暂停统计，不会默默补零。</li>
+      </ul>
+    </details>
+    <p class="guide-footnote">建议提供连续两个月的数据以生成月度对比；只有一个月时会先建立基线。空白模板只有列名，不含演示订单。想先体验效果，可直接点击“载入合成演示”。演示样本为程序合成。上传内容仅在浏览器本地处理。</p>
+  </div>
+</details>
+<div id="content"></div><footer>展示样本：程序合成订单，仅用于验证页面功能与演示交互。<br>数据边界：无访问数据，不计算访问 UV 或转化率；有单餐厅不代表在线营业供给。趋势与分组差异仅为相关信号，不能直接推断投放、促销的因果效果。<br>当前为上传后自动分析模式；不会在后台读取本地文件，也不会向外部传输订单数据。</footer></main><script src="engine.js"></script><script src="monthly.js"></script><script src="app.js"></script><script src="monthly-ui.js"></script></body></html>
+
